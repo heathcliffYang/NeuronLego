@@ -45,21 +45,13 @@ for e in range(epoch):
     loss_total = 0
     acc  = 0
     for i_batch, sample_batched in enumerate(dataloader_train):
-        # print(i_batch, sample_batched['image'].size(), sample_batched['label'].size())
-
         optimizer.zero_grad()
-
         input = sample_batched['image'].clone().detach().permute(0,3,1,2).type(torch.FloatTensor)
-        # print(input.type())
-
         prediction, mu, logvar = cnn(input)
         gt = sample_batched['label'].view(-1,1).type(torch.FloatTensor)
-
-        # print(prediction.type(), gt.type(), prediction.shape)
         loss = criterion.forward(prediction, gt)
         loss.backward()
         optimizer.step()
-
 
         loss_total += loss.item()
         positive = 0
@@ -82,11 +74,7 @@ for e in range(epoch):
 
         prediction, mu, logvar = cnn(input)
         gt = sample_batched['label'].view(-1,1).type(torch.FloatTensor)
-
         loss = criterion.forward(prediction, gt)
-        loss.backward()
-        optimizer.step()
-
 
         loss_total += loss.item()
         positive = 0
@@ -98,6 +86,6 @@ for e in range(epoch):
                 acc += 1
     print("Test - loss: %.3f - hits: %.2f"%(loss_total / len(dataset_test), acc / len(dataset_test)))
 
-    PATH = '/home/ginny/Projects/models/masked_face_classifier/64_%d.pt'%(e)
+    PATH = '/home/ginny/Projects/models/masked_face_classifier/32_%d.pt'%(e)
 
     torch.save(cnn.state_dict(), PATH)

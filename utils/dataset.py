@@ -4,7 +4,7 @@ import numpy as np
 
 import os
 
-image_suffix = ['jpg', 'JPG', 'JPEG', 'jpeg', 'png', 'PNG']
+image_suffix = ['jpg', 'JPG', 'JPEG', 'jpeg', 'png', 'PNG', 'bmp']
 
 class MaskedFaceDataset(Dataset):
 
@@ -28,14 +28,10 @@ class MaskedFaceDataset(Dataset):
 
     def __getitem__(self, idx):
         image = cv2.imread(self.image_file_list[idx])
-        # print(self.image_file_list[idx])
-        image = cv2.resize(image, (64, 64))
+        image = cv2.cvtColor(cv2.resize(image, (32, 32)), cv2.COLOR_BGR2RGB)
         # normalize
-        image_mean = np.mean(image)
-        image_std = np.std(image)
-        image = (image - image_mean)/image_std
-        # print(np.mean(image), np.std(image))
-        sample = {'image': image, 'label': self.label_list[idx]}
+        image = image / 255.
+        sample = {'image': image, 'label': self.label_list[idx], 'filepath': self.image_file_list[idx]}
         return sample
 
 
